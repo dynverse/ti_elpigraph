@@ -1,6 +1,6 @@
 id: elpigraph
-docker_repository: dynverse/dynmethods:elpigraph
-container_url: https://github.com/dynverse/dynmethods/tree/master/containers/elpigraph
+docker_repository: dynverse/ti_elpigraph
+container_url: https://github.com/dynverse/ti_elpigraph
 name: ElPiGraph
 type: algorithm
 implementation_id: elpigraph
