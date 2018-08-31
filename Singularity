@@ -8,9 +8,10 @@ Bootstrap: shub
 From: dynverse/dynwrap:r
 
 %labels
-    version 0.1.0
+    version 0.1.1
 
 %post
+    chmod -R a+r /code
     apt-get -y install libudunits2-dev
     Rscript -e 'devtools::install_cran("udunits2", configure.args =  c(udunits2 = "--with-udunits2-include=/usr/include/udunits2"))'
     R -e "devtools::install_github('Albluca/ElPiGraph.R')"

@@ -1,6 +1,6 @@
 FROM dynverse/dynwrap:r
 
-LABEL version 0.1.0
+LABEL version 0.1.1
 
 RUN apt-get -y install libudunits2-dev
 
