@@ -1,5 +1,6 @@
 id: elpigraph
 docker_repository: dynverse/ti_elpigraph
+singularity_collection: 1543
 container_url: https://github.com/dynverse/ti_elpigraph
 name: ElPiGraph
 type: algorithm
