@@ -101,5 +101,5 @@ dynwrap::wrap_data(cell_ids = rownames(expression)) %>%
     milestone_network = milestone_network,
     progressions = progressions
   ) %>%
-  dynwrap::add_timings(timings = timings) %>%
+  dynwrap::add_timings(timings = checkpoints) %>%
   dyncli::write_output(task$output)
