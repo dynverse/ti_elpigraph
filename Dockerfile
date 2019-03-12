@@ -1,5 +1,7 @@
 FROM dynverse/dynwrapr:v0.1.0
 
+ARG GITHUB_PAT
+
 RUN apt-get update && apt-get -y install libudunits2-dev
 
 RUN Rscript -e 'devtools::install_cran("udunits2", configure.args =  c(udunits2 = "--with-udunits2-include=/usr/include/udunits2"))'
