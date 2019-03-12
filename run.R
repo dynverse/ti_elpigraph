@@ -75,7 +75,7 @@ checkpoints$method_aftermethod <- as.numeric(Sys.time())
 #   ____________________________________________________________________________
 #   Process & save the model                                               ####
 milestone_network <- ProjStruct$Edges %>%
-  as_data_frame() %>%
+  as_tibble() %>%
   rename(from = row, to = col) %>%
   mutate(
     from = paste0("M", from),
