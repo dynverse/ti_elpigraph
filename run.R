@@ -1,3 +1,7 @@
+#!/usr/local/bin/Rscript
+
+task <- dyncli::main()
+
 library(jsonlite)
 library(dplyr)
 library(purrr)
@@ -8,16 +12,8 @@ library(ElPiGraph.R)
 #   ____________________________________________________________________________
 #   Load data                                                               ####
 
-data <- read_rds("/ti/input/data.rds")
-params <- jsonlite::read_json("/ti/input/params.json")
-
-#' @examples
-#' data <- dyntoy::generate_dataset(id = "test", num_cells = 400, num_features = 401, model = "tree")
-#' params <- yaml::read_yaml("containers/elpigraph/definition.yml")$parameters %>%
-#'   {.[names(.) != "forbidden"]} %>%
-#'   map(~ .$default)
-
-expression <- data$expression
+expression <- as.matrix(task$expression)
+params <- task$params
 
 checkpoints <- list()
 checkpoints$method_afterpreproc <- as.numeric(Sys.time())
@@ -25,7 +21,7 @@ checkpoints$method_afterpreproc <- as.numeric(Sys.time())
 #   ____________________________________________________________________________
 #   Infer the trajectory                                                    ####
 # choose graph topology
-if (!is.null(data$trajectory_type)) {
+if (!is.null(task$priors$trajectory_type)) {
   principal_graph_function <- switch(
     data$trajectory_type,
     linear = computeElasticPrincipalCurve,
@@ -100,4 +96,10 @@ output <- lst(
   timings = checkpoints
 )
 
-write_rds(output, "/ti/output/output.rds")
+dynwrap::wrap_data(cell_ids = rownames(expression)) %>%
+  dynwrap::add_trajectory(
+    milestone_network = milestone_network,
+    progressions = progressions
+  ) %>%
+  dynwrap::add_timings(timings = timings) %>%
+  dyncli::write_output(task$output)

@@ -1,12 +1,11 @@
-FROM dynverse/dynwrap:r
+FROM dynverse/dynwrapr:v0.1.0
 
-RUN apt-get -y install libudunits2-dev
+RUN apt-get update && apt-get -y install libudunits2-dev
 
 RUN Rscript -e 'devtools::install_cran("udunits2", configure.args =  c(udunits2 = "--with-udunits2-include=/usr/include/udunits2"))'
 
 RUN R -e "devtools::install_github('Albluca/ElPiGraph.R')"
 
-LABEL version 0.1.4
+COPY definition.yml run.R example.h5 /code/
 
-ADD . /code
-ENTRYPOINT Rscript /code/run.R
+ENTRYPOINT ["/code/run.R"]
