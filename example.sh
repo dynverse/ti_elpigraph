@@ -3,7 +3,7 @@
 # generate dataset with certain seed
 set.seed(1)
 data <- dyntoy::generate_dataset(
-  id = "specific_example/template",
+  id = "specific_example/elpigraph",
   num_cells = 99,
   num_features = 101,
   model = "tree",

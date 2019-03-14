@@ -22,7 +22,7 @@ container:
   docker: dynverse/ti_elpigraph
 
 wrapper:
-  type:
+  type: trajectory
   topology_inference: free
   trajectory_types:
   - linear
@@ -31,7 +31,6 @@ wrapper:
   - multifurcation
   - binary_tree
   - tree
-  example:
   input_required:
   - expression
 
