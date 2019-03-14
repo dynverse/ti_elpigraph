@@ -8,6 +8,6 @@ RUN Rscript -e 'devtools::install_cran("udunits2", configure.args =  c(udunits2 
 
 RUN R -e "devtools::install_github('Albluca/ElPiGraph.R')"
 
-COPY definition.yml run.R example.h5 /code/
+COPY definition.yml run.R example.sh /code/
 
 ENTRYPOINT ["/code/run.R"]
