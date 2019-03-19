@@ -13,7 +13,7 @@ library(ElPiGraph.R)
 #   Load data                                                               ####
 
 expression <- as.matrix(task$expression)
-params <- task$params
+parameters <- task$parameters
 
 checkpoints <- list()
 checkpoints$method_afterpreproc <- as.numeric(Sys.time())
@@ -34,7 +34,7 @@ if (!is.null(task$priors$trajectory_type)) {
   )
 } else {
   principal_graph_function <- switch(
-    params$topology,
+    parameters$topology,
     linear = computeElasticPrincipalCurve,
     cycle = computeElasticPrincipalCircle,
     computeElasticPrincipalTree
@@ -44,14 +44,14 @@ if (!is.null(task$priors$trajectory_type)) {
 # infer the principal graph, from https://github.com/Albluca/ElPiGraph.R/blob/master/guides/base.md
 principal_graph <- principal_graph_function(
   X = expression,
-  NumNodes = params$NumNodes,
-  NumEdges = params$NumEdges,
-  InitNodes = params$InitNodes,
-  MaxNumberOfIterations = params$MaxNumberOfIterations,
-  eps = params$eps,
-  CenterData = params$CenterData,
-  Lambda = params$Lambda,
-  Mu = params$Mu,
+  NumNodes = parameters$NumNodes,
+  NumEdges = parameters$NumEdges,
+  InitNodes = parameters$InitNodes,
+  MaxNumberOfIterations = parameters$MaxNumberOfIterations,
+  eps = parameters$eps,
+  CenterData = parameters$CenterData,
+  Lambda = parameters$Lambda,
+  Mu = parameters$Mu,
   drawAccuracyComplexity = FALSE,
   drawEnergy = FALSE,
   drawPCAView = FALSE
