@@ -1,91 +1,105 @@
-id: elpigraph
-docker_repository: dynverse/ti_elpigraph
-singularity_collection: 1543
-container_url: https://github.com/dynverse/ti_elpigraph
-name: ElPiGraph
-source: tool
-implementation_id: elpigraph
-platform: R
-arXiv: '1804.07580'
-google_scholar_cluster_id: '13755708560339919612'
+method:
+  id: elpigraph
+  name: ElPiGraph
+  source: tool
+  tool_id: elpigraph
+  platform: R
+  url: https://github.com/Albluca/ElPiGraph.R
+  license: GPL-3
+  authors:
+  - given: Luca
+    family: Albergante
+    email: luca.albergante@gmail.com
+    github: Albluca
+    ORCID: 0000-0001-8151-6989
+
+manuscript:
+  google_scholar_cluster_id: '13755708560339919612'
+  preprint_date: '2018-04-20'
+
+container:
+  url: https://github.com/dynverse/ti_elpigraph
+  docker: dynverse/ti_elpigraph
+
+wrapper:
+  type: trajectory
+  topology_inference: free
+  trajectory_types:
+  - linear
+  - bifurcation
+  - convergence
+  - multifurcation
+  - binary_tree
+  - tree
+  input_required:
+  - expression
+
 parameters:
-  topology:
+  - id: topology
     description: the kind of topology to detect
-    type: discrete
+    type: character
     values:
     - cycle
     - tree
     - linear
     default: tree
-  NumNodes:
+  - id: NumNodes
     description: the number of nodes of the principal graph
     type: integer
-    lower: 2
-    upper: 1000
+    distribution:
+      type: uniform
+      lower: 2
+      upper: 1000
     default: 50
-  NumEdges:
+  - id: NumEdges
     description: the maximum number of edges
     type: integer
-    lower: 2
-    upper: 100000
+    distribution:
+      type: expuniform
+      lower: 2
+      upper: 100000
     default: 100000
-  InitNodes:
+  - id: InitNodes
     description: number of points to include in the initial graph
     type: integer
-    lower: 2
-    upper: 1000
+    distribution:
+      type: expuniform
+      lower: 2
+      upper: 1000
     default: 2
-  Mu:
+  - id: Mu
     description: controls the elastic energy
     type: numeric
-    lower: 0.001
-    upper: 1
+    distribution:
+      type: expuniform
+      lower: 0.001
+      upper: 1
     default: 0.1
-  Lambda:
+  - id: Lambda
     description: controls the elastic energy
     type: numeric
-    lower: 0.001
-    upper: 1
+    distribution:
+      type: expuniform
+      lower: 0.001
+      upper: 1
     default: 0.01
-  MaxNumberOfIterations:
+  - id: MaxNumberOfIterations
     description: maximum number of steps to embed the nodes
     type: integer
-    lower: 1
-    upper: 1000
+    distribution:
+      type: expuniform
+      lower: 1
+      upper: 1000
     default: 10
-  eps:
+  - id: eps
     description: minimal relative change in the position of the nodes to stop embedment
     type: numeric
-    lower: 0.001
-    upper: 1
+    distribution:
+      type: expuniform
+      lower: 0.001
+      upper: 1
     default: 0.01
-  CenterData:
+  - id: CenterData
     description: should data and initial node positions be centered?
     type: logical
     default: no
-input:
-  format: rds
-  required: expression
-output:
-  format: rds
-  outputs:
-  - trajectory
-  - timings
-wrapper_type: trajectory
-trajectory_types:
-- linear
-- bifurcation
-- convergence
-- multifurcation
-- binary_tree
-- tree
-topology_inference: free
-license: GPL-3
-authors:
-- given: Luca
-  family: Albergante
-  email: luca.albergante@gmail.com
-  github: Albluca
-  ORCID: 0000-0001-8151-6989
-preprint_date: '2018-04-20'
-code_url: https://github.com/Albluca/ElPiGraph.R

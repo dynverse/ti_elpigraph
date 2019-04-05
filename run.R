@@ -1,3 +1,7 @@
+#!/usr/local/bin/Rscript
+
+task <- dyncli::main()
+
 library(jsonlite)
 library(dplyr)
 library(purrr)
@@ -8,16 +12,8 @@ library(ElPiGraph.R)
 #   ____________________________________________________________________________
 #   Load data                                                               ####
 
-data <- read_rds("/ti/input/data.rds")
-params <- jsonlite::read_json("/ti/input/params.json")
-
-#' @examples
-#' data <- dyntoy::generate_dataset(id = "test", num_cells = 400, num_features = 401, model = "tree")
-#' params <- yaml::read_yaml("containers/elpigraph/definition.yml")$parameters %>%
-#'   {.[names(.) != "forbidden"]} %>%
-#'   map(~ .$default)
-
-expression <- data$expression
+expression <- as.matrix(task$expression)
+parameters <- task$parameters
 
 checkpoints <- list()
 checkpoints$method_afterpreproc <- as.numeric(Sys.time())
@@ -25,7 +21,7 @@ checkpoints$method_afterpreproc <- as.numeric(Sys.time())
 #   ____________________________________________________________________________
 #   Infer the trajectory                                                    ####
 # choose graph topology
-if (!is.null(data$trajectory_type)) {
+if (!is.null(task$priors$trajectory_type)) {
   principal_graph_function <- switch(
     data$trajectory_type,
     linear = computeElasticPrincipalCurve,
@@ -38,7 +34,7 @@ if (!is.null(data$trajectory_type)) {
   )
 } else {
   principal_graph_function <- switch(
-    params$topology,
+    parameters$topology,
     linear = computeElasticPrincipalCurve,
     cycle = computeElasticPrincipalCircle,
     computeElasticPrincipalTree
@@ -48,14 +44,14 @@ if (!is.null(data$trajectory_type)) {
 # infer the principal graph, from https://github.com/Albluca/ElPiGraph.R/blob/master/guides/base.md
 principal_graph <- principal_graph_function(
   X = expression,
-  NumNodes = params$NumNodes,
-  NumEdges = params$NumEdges,
-  InitNodes = params$InitNodes,
-  MaxNumberOfIterations = params$MaxNumberOfIterations,
-  eps = params$eps,
-  CenterData = params$CenterData,
-  Lambda = params$Lambda,
-  Mu = params$Mu,
+  NumNodes = parameters$NumNodes,
+  NumEdges = parameters$NumEdges,
+  InitNodes = parameters$InitNodes,
+  MaxNumberOfIterations = parameters$MaxNumberOfIterations,
+  eps = parameters$eps,
+  CenterData = parameters$CenterData,
+  Lambda = parameters$Lambda,
+  Mu = parameters$Mu,
   drawAccuracyComplexity = FALSE,
   drawEnergy = FALSE,
   drawPCAView = FALSE
@@ -79,7 +75,7 @@ checkpoints$method_aftermethod <- as.numeric(Sys.time())
 #   ____________________________________________________________________________
 #   Process & save the model                                               ####
 milestone_network <- ProjStruct$Edges %>%
-  as_data_frame() %>%
+  as_tibble() %>%
   rename(from = row, to = col) %>%
   mutate(
     from = paste0("M", from),
@@ -100,4 +96,10 @@ output <- lst(
   timings = checkpoints
 )
 
-write_rds(output, "/ti/output/output.rds")
+dynwrap::wrap_data(cell_ids = rownames(expression)) %>%
+  dynwrap::add_trajectory(
+    milestone_network = milestone_network,
+    progressions = progressions
+  ) %>%
+  dynwrap::add_timings(timings = checkpoints) %>%
+  dyncli::write_output(task$output)
